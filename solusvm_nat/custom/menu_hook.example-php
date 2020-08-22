@@ -1,0 +1,18 @@
+<?php
+if (!defined("WHMCS")) {
+    die("This file cannot be accessed directly");
+}
+
+use WHMCS\View\Menu\Item as MenuItem;
+
+return function(MenuItem $primaryNavbar){
+    $primaryNavbar->getChild('Services')->addChild('NAT Divider')
+                                        ->setLabel("-----")
+                                        ->setClass("nav-divider")
+                                        ->setOrder(10);
+
+    $primaryNavbar->getChild('Services')->addChild('NAT Port Forward')
+                                        ->setLabel("NAT VPS端口映射管理")
+                                        ->setUri("index.php?m=solusvm_nat")
+                                        ->setOrder(10);
+};

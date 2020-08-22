@@ -1,0 +1,34 @@
+<div class="main-loading" style="display: none">
+    <h1 style="text-align:center;color: #8f8f8f;font-weight: 500;font-size: 48px">
+            <i class="fa fa-refresh fa-spin"></i> 请稍后 , 正在加载页面
+    </h1>
+</div>
+
+<script type="text/javascript">
+    var page_lock = false;
+    // 导航栏标识当前页面
+    $(".navbar-nav a[data-page='" + page + "']").parent().addClass('active');
+
+
+    // 异步加载页面
+    $(".navbar-collapse ul.nav a[data-href]").click(function(){
+        if (page_lock){
+            return false;
+        }
+        $(".navbar-collapse ul li.active").removeClass("active");
+        $(this).parent().addClass('active');
+        $("#solusvm_nat_body").html($(".main-loading").html());
+        $(".navbar-collapse ul.nav a[data-href]").prop("disabled", "disabled");
+        page_lock = true;
+        $("#solusvm_nat_body").load($(this).data("href") + "&ajax=true", function() {
+            page_lock = false;
+            $(".navbar-collapse ul.nav a[data-href]").prop("disabled", "");
+            $(".navbar-collapse ul li.active").removeClass("active");
+            $(".navbar-nav a[data-page='" + page + "']").parent().addClass('active');
+            
+            window.history.pushState("", "", $("ul.navbar-nav li.active a").data("href"));
+        })
+    })
+</script>
+
+<script type="text/javascript" src="../modules/addons/solusvm_nat/static/js/jquery-confirm.js"></script>

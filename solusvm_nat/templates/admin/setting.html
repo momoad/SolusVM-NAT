@@ -1,0 +1,143 @@
+<div class="setting-body">
+    <div class="loading">
+        <h1 style="text-align:center;color: #8f8f8f;font-weight: 500;font-size: 48px">
+                <i class="fa fa-refresh fa-spin"></i> 请稍后 , 正在加载配置
+        </h1>
+    </div>
+    <div class="setting row" style="display:none">
+        <div class="col-md-12">
+            <div class="alert alert-warning" role="alert" style="display:none"><h4>配置检查</h4><p>请检查设置是否正确, 设置正确后将解除访问限制</p></div>
+            <form method="post" onsubmit="return save_setting(this);">
+                <table class="form" width="100%" border="0" cellspacing="2" cellpadding="3"><tbody></tbody></table>
+                <div class="btn-container">
+                    <input id="saveChanges" type="submit" value="保存" class="btn btn-primary">
+                    <input type="reset" value="重置" class="btn btn-default">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+var apply_setting = function(settings){
+    for (setting in settings){
+        var _setting = settings[setting]
+        _setting.name = setting
+        add_setting(_setting)
+    }
+}
+
+var add_setting = function(setting){
+    html = '<tr><td class="fieldlabel">' + setting.displayname + '</td><td class="fieldarea">'
+
+    switch(setting.type){
+        case "textarea":
+            if (setting.col === undefined){
+                setting.col = 10
+            }
+
+            if (setting.row === undefined){
+                setting.row = 10
+            }
+
+            if (setting.placeholder === undefined){
+                setting.placeholder = ''
+            }
+
+            if (setting.value === undefined){
+                setting.value = ''
+            }
+
+            html += '<textarea cols="'+ setting.col + '" rows="'+ setting.row + '" name="'+ setting.name + '" placeholder="'+ setting.placeholder + '" class="form-control bottom-margin-5">'+ setting.value + '</textarea>'
+
+
+            break;
+        case "checkbox":
+            html += '<label class="checkbox-inline"><input type="checkbox" name="'+ setting.name + '" '
+            if ((setting.value && setting.value == true) || (setting.value && setting.value == "on")){
+                html += "checked"
+            }
+            html += ">" + setting.description + "</label>"
+            break;
+        case "input":
+            html += '<input type="'
+            if (setting.input_type){
+                html += setting.input_type
+            } else {
+                html += "text"
+            }
+
+            if (setting.value === undefined){
+                setting.value = ''
+            }
+
+            html += '" name="' + setting.name + '" value="' + setting.value + '" '
+            
+            if (setting.input_size){
+                html += 'size="' + setting.input_size + '"'
+            }
+            html += ">"
+            break;
+    }
+
+    if (setting.description && setting.type != "checkbox"){
+        html += ' ' + setting.description
+    }
+     html += '</td>'
+    $(".setting-body .form tbody").append(html)
+}
+
+var load_setting = function(){
+    $(".loading").show()
+    $(".setting.row").hide()
+
+    $.ajax({
+        url: "addonmodules.php?module=solusvm_nat&ajax=true&action=get_setting",
+        dateType: "json"
+    }).done(function(response){
+        if (response.result == "success"){
+            $(".loading").hide()
+            $(".setting.row").show()
+            apply_setting(response.setting)
+            setting_cache = response.setting
+            if (!response.vaild){
+                $(".setting .alert").show()
+            }
+        }
+    }).fail(function(){
+        $(".loading h1").html('<i class="fa fa-times" aria-hidden="true"></i> 加载数据错误, 请刷新重试')
+    })
+}
+
+var save_setting = function(form){
+    $(form).find(".btn-container input").prop("disabled","disabled")
+    $.ajax({
+        url: "addonmodules.php?module=solusvm_nat&ajax=true&action=update_setting",
+        tpye: "post",
+        data: $(form).serialize(),
+        dateType: "json"
+    }).done(function(response){
+        $(form).find(".btn-container input").prop("disabled","")
+        if (response.result == "success"){
+            $(".setting .alert").hide()
+            $.growl.notice({ message: "配置保存成功" });
+        } else {
+            $(".setting .alert").show()
+            $.growl.error({ message: response.error });
+        }
+    }).fail(function(){
+        $(form).find(".btn-container input").prop("disabled","")
+        $.growl.error({ message: "保存时出现服务器错误, 请稍后再试" });
+    })
+    return false;
+}
+
+load_setting()
+
+</script>
+
+<script type="text/javascript">
+    var page = "setting";
+</script>

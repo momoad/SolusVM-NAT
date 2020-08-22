@@ -1,0 +1,98 @@
+<div class="license-body">
+    <div class="loading">
+        <h1 style="text-align:center;color: #8f8f8f;font-weight: 500;font-size: 48px">
+                <i class="fa fa-refresh fa-spin"></i> 请稍后 , 正在加载数据
+        </h1>
+    </div>
+    <div class="license-div-body" style="display:none">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="alert alert-warning" role="alert" style="display: none">系统中没有授权 , 请填写授权码进行授权该插件</div>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="key" placeholder="您的授权码..." onkeypress="if(event.keyCode==13) {update_license();return false;}">
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary edit_license" type="button" onclick="edit_license()" style="display:none"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> 修改</button>
+                      <button class="btn btn-primary update_license" type="button" onclick="update_license()"><i class="fa fa-check" aria-hidden="true"></i> 应用</button>
+                    </span>
+                </div>
+                <br/>
+                <div class="panel panel-default">
+                    <div class="panel-heading">目前授权信息</div>
+                    <div class="panel-body">
+                        暂无
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+var edit_license = function(){
+    $('.license-div-body input[name="key"]').prop("disabled", "")
+    $(".license-div-body .edit_license").hide()
+    $(".license-div-body .update_license").show()
+}
+
+var load_license = function(){
+    $.ajax({
+        url: "addonmodules.php?module=solusvm_nat&ajax=true&action=get_license",
+        dateType: "json"
+    }).done(function(response){
+        if (response.result == "success"){
+            $('.license-div-body input[name="key"]').on('input', function() {
+                var key = $(this).val().toUpperCase().replace(/[^A-Z0-9]/g, '');
+                $(this).val(key.substr(0, 36).replace(/([A-Z0-9]{6})(?=(?:[A-Z0-9]{1,6})+(?![A-Z0-9]))/g,'$1-'));
+            });
+            $(".loading").hide()
+            $(".license-div-body").show()
+            if (response.license_vaild == false){
+                $(".license-div-body .alert").show()
+            } else {
+                $('.license-div-body input[name="key"]').val(response.license_data.key)
+                $('.license-div-body input[name="key"]').prop("disabled", "disabled")
+                $(".license-div-body .edit_license").show()
+                $(".license-div-body .update_license").hide()
+                $('.license-div-body .panel-body').html("该插件已注册给 : " + response.license_data.name + "<br/>有效期 : 永久<br/>感谢您对WeLoveIDC的支持")
+            }
+        }
+    }).fail(function(){
+        $(".loading h1").html('<i class="fa fa-times" aria-hidden="true"></i> 加载数据错误, 请刷新重试')
+    })
+}
+
+var update_license = function(){
+    $.confirm({
+        content: function () {
+            var self = this;
+            return $.ajax({
+                url: "addonmodules.php?module=solusvm_nat&ajax=true&action=update_license",
+                method: "post",
+                data: {
+                    "key": $('.license-div-body input[name="key"]').val()
+                },
+                dateType: "json"
+            }).done(function (response) {
+                if (response.license_vaild){
+                    self.close()
+                    $('a[data-page="license"]').click()
+                } else {
+                    self.setType('red')
+                    self.setTitle('错误');
+                    self.setContent(response.error);
+                }
+            }).fail(function(){
+                self.setType('red')
+                self.setTitle('错误');
+                self.setContent('与服务器通讯时出现错误, 请重试.');
+            });
+        }
+    });
+}
+
+
+load_license()
+</script>
+<script type="text/javascript">
+    var page = "license";
+</script>
