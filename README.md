@@ -19,6 +19,16 @@ php extend_api.php
 
 {"result":"error","error":"key error"}
 
+## 授权
+
+将license目录放在网站根目录
+license目录中文件有 index.php、getMyIp.php
+
+编辑solusvm_nat模块中的version.php
+将文件中的网址改为您的网址，不加http://或者https://
+
+保存后就可以到后台看下过授权步骤了
+
 ## 安装solusvm被控
 
 伪授权
