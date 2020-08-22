@@ -2,6 +2,17 @@
 
 仅作记录，自己看的，不懂自己研究
 
+## 安装whmcs拓展
+把SolusVM-NAT文件夹放在/modules/addons中
+
+将license目录放在网站根目录
+license目录中文件有 index.php、getMyIp.php
+
+编辑solusvm_nat模块中的version.php
+将文件中的网址改为您的网址，不加http://或者https://
+
+保存后就可以到后台看下过授权步骤了
+
 ## 主控扩展安装
 
 获得扩展 API 文件
@@ -19,23 +30,14 @@ php extend_api.php
 
 {"result":"error","error":"key error"}
 
-## 授权
-
-将license目录放在网站根目录
-license目录中文件有 index.php、getMyIp.php
-
-编辑solusvm_nat模块中的version.php
-将文件中的网址改为您的网址，不加http://或者https://
-
-保存后就可以到后台看下过授权步骤了
-
 ## 安装solusvm被控
 
 伪授权
 
 创建网桥 natbr0
 brctl addbr natbr0
-vi /etc/sysconfig/network-scripts/ifcfg-natbr0
+然后 vi /etc/sysconfig/network-scripts/ifcfg-natbr0
+写入斜面内容
 
 DEVICE=natbr0
 TYPE=Bridge
@@ -50,7 +52,7 @@ sysctl net.ipv4.ip_forward
 输出1就是代表有，一般安装solusvm会自动开的
 
 开启端口转发
-iptables -t nat -A POSTROUTING -s '10.111.111.0/24' -o 拥有公网IP的网卡 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s '10.111.111.0/24' -o 拥有公网IP的网卡名 -j MASQUERADE
 service iptables save
 重启iptables
 
@@ -60,7 +62,7 @@ service iptables save
 新建个config.ini
 
 RPC_URL="https://xxxxx/modules/addons/solusvm_nat/rpc/node.php" 
-NIC="外网网卡"
+NIC="拥有公网IP的网卡名"
 SEGMENT="10.111.111.0/24"
 
 测试配置是否正常
