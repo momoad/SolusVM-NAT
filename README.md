@@ -72,23 +72,23 @@
 
 命令预期回应
 
-   Public interface: br0 (10.100.100.174)
-   Intranet segment: 10.111.111.0/24
+    Public interface: br0 (10.100.100.174)
+    Intranet segment: 10.111.111.0/24
  
-   !!! No nat forward rule found, clean all nat rules !!!
+    !!! No nat forward rule found, clean all nat rules !!!
  
-   Rules counter:
-   New: 0
-   Delete: 0
-   Exist(s): 0
+    Rules counter:
+    New: 0
+    Delete: 0
+    Exist(s): 0
 
 
 
 创建任务`crontab -e`
 每一分钟php运行下nat_check.php
 
-   */5 * * * * rm -f /usr/local/solusvm/data/.hosts
-   */1 * * * * php -q /root/nat_check.php
+    */5 * * * * rm -f /usr/local/solusvm/data/.hosts
+    */1 * * * * php -q /root/nat_check.php
 
 ## Solusvm 配置 noVNC
 
@@ -101,9 +101,9 @@
 
 添加以下内容
 
-   [NOVNC]
-   use_remote_hostname = true
-   socket_dest_public = false
+    [NOVNC]
+    use_remote_hostname = true
+    socket_dest_public = false
 
 到被控修改hostname为你准备好的域名，并且修改如下内容：
 `vi /usr/local/solusvm/includes/nvnc/cert.pem`
@@ -112,7 +112,7 @@
 
 在被控上重启一下websocket
 
-   sh /scripts/websocket-stop
-   php /usr/local/solusvm/includes/wsocket.php
-   
+    sh /scripts/websocket-stop
+    php /usr/local/solusvm/includes/wsocket.php
+
 其实不用重启也可以，导入以后自动开启
