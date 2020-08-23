@@ -35,7 +35,11 @@
 
 ## 安装solusvm被控
 
-安装solusvm被控，以及做好授权
+母鸡推荐使用centos 6
+
+安装solusvm被控
+
+做好授权
 
 ### 创建网桥
 
