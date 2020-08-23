@@ -6,6 +6,7 @@
 把SolusVM-NAT文件夹放在/modules/addons中
 
 编辑solusvm_nat模块中的version.php
+
 将文件中的网址改为您的网址，不加“http://”或者“https://”
 
 保存后就可以到后台看下过授权步骤了
@@ -13,12 +14,17 @@
 ## 主控扩展安装
 
 获得扩展 API 文件
+
 该文件在 solusvm-nat/scripts/extend_api.php
+
 请复制该文件到您的solusvm主控 /usr/local/solusvm/www 下
+
 最好推荐在该目录新建目录存放该扩展 API 文件
 
 生成通讯密钥
+
 登陆主控，切换到扩展 API 文件所在文件夹,
+
 执行命令：`php extend_api.php`
 
 
@@ -33,7 +39,9 @@
 自己先做好授权
 
 创建网桥 natbr0：`brctl addbr natbr0`
+
 然后 `vi /etc/sysconfig/network-scripts/ifcfg-natbr0`
+
 写入下面内容
 
     DEVICE=natbr0
@@ -58,6 +66,7 @@
 把solusvm面板里节点的KVM桥改成natbr0
 
 把nat_check.php放到被控任意目录
+
 新建个config.ini
 
     RPC_URL="https://xxxxx/modules/addons/solusvm_nat/rpc/node.php" 
@@ -85,6 +94,7 @@
 
 
 创建任务`crontab -e`
+
 每一分钟php运行下nat_check.php
 
     */5 * * * * rm -f /usr/local/solusvm/data/.hosts
@@ -97,6 +107,7 @@
 然后我们将SSL证书合并为PEM文件，在线合并工具https://www.myssl.cn/tools/merge-pem-cert.html
 
 到主控（安装solusvm主控端的机器），添加一些东西具体操作如下：
+
 `vi /usr/local/solusvm/data/config.ini`
 
 添加以下内容
@@ -105,10 +116,11 @@
     use_remote_hostname = true
     socket_dest_public = false
 
-到被控修改hostname为你准备好的域名，并且修改如下内容：
+到被控修改hostname为你准备好的域名
+
 `vi /usr/local/solusvm/includes/nvnc/cert.pem`
 
-将你准备好的pem文件内容添加到这里即可
+将你准备好的pem文件内容复制到这里即可
 
 在被控上重启一下websocket
 
