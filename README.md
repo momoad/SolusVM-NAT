@@ -111,7 +111,7 @@
 
 并准备好这个域名的SSL证书
 
-然后我们将SSL证书合并为PEM文件
+然后将SSL证书合并为PEM文件
 
 [在线合并工具](https://www.myssl.cn/tools/merge-pem-cert.html)
 
