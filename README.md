@@ -30,7 +30,7 @@
 
 ## 安装solusvm被控
 
-伪授权
+自己先做好授权
 
 创建网桥 natbr0：`brctl addbr natbr0`
 然后 `vi /etc/sysconfig/network-scripts/ifcfg-natbr0`
@@ -42,13 +42,15 @@
     IPADDR=10.111.111.1（可以改成其他的内网段）
     NETMASK=255.255.255.0
     ONBOOT=yes
+
 保存 重启网络
 
-查看是否开启包转发
-    sysctl net.ipv4.ip_forward
+查看是否开启包转发：`sysctl net.ipv4.ip_forward`
+
 输出1就是代表有，一般安装solusvm会自动开的
 
 开启端口转发
+
     iptables -t nat -A POSTROUTING -s '10.111.111.0/24' -o 拥有公网IP的网卡名 -j MASQUERADE
     service iptables save
     service iptables restart
@@ -63,8 +65,11 @@
     SEGMENT="10.111.111.0/24"
 
 测试配置是否正常
+
 执行以下命令，查看命令回应是否如预期所示
+
 `php nat_check.php`
+
 命令预期回应
 
    Public interface: br0 (10.100.100.174)
@@ -81,6 +86,7 @@
 
 创建任务`crontab -e`
 每一分钟php运行下nat_check.php
+
    */5 * * * * rm -f /usr/local/solusvm/data/.hosts
    */1 * * * * php -q /root/nat_check.php
 
@@ -101,10 +107,12 @@
 
 到被控修改hostname为你准备好的域名，并且修改如下内容：
 `vi /usr/local/solusvm/includes/nvnc/cert.pem`
+
 将你准备好的pem文件内容添加到这里即可
 
 在被控上重启一下websocket
 
    sh /scripts/websocket-stop
    php /usr/local/solusvm/includes/wsocket.php
+   
 其实不用重启也可以，导入以后自动开启
